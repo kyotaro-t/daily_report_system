@@ -16,13 +16,26 @@
                     <th class="report_date">日付</th>
                     <th class="report_title">タイトル</th>
                     <th class="report_action">操作</th>
+                    <th class="report_yoine">いいね！</th>
+                    <th class="report_yoineCount">いいね件数</th>
+
                 </tr>
                 <c:forEach var="report" items="${reports}" varStatus="status">
                     <tr class="row${status.count % 2}">
                         <td class="report_name"><c:out value="${report.employee.name}" /></td>
                         <td class="report_date"><fmt:formatDate value='${report.report_date}' pattern='yyyy-MM-dd' /></td>
-                        <td class="report_title">${report.title}</td>
+                        <td class="report_title">${report.title}
                         <td class="report_action"><a href="<c:url value='/reports/show?id=${report.id}' />">詳細を見る</a></td>
+                        <td class="report_yoine">
+                            <c:if test="${report.yoine == false}">
+                                <a href="<c:url value='/yoine?id=${report.id}'></c:url>">いいね!</a>
+                            </c:if>
+                            <c:if test="${report.yoine == true}">
+                                <a href="<c:url value='/yoine/destroy?id=${report.id}'></c:url>">いいね解除</a>
+                            </c:if>
+                        </td>
+                        <td class="report_yoineCount"><c:out value="${report.yoineCount}"></c:out></td>
+
                     </tr>
                 </c:forEach>
             </tbody>

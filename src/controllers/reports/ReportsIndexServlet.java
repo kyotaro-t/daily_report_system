@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import models.Employee;
 import models.Report;
 import util.DBUtil;
 
@@ -35,6 +36,8 @@ public class ReportsIndexServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         EntityManager em = DBUtil.createEntityManager();
 
+        Employee login_employee = (Employee)request.getSession().getAttribute("login_employee");
+
         int page;
         try{
             page = Integer.parseInt(request.getParameter("page"));
@@ -46,6 +49,27 @@ public class ReportsIndexServlet extends HttpServlet {
                                   .setMaxResults(15)
                                   .getResultList();
 
+        for( Report report : reports ) {
+            long yoine_count = em.createNamedQuery("getYoineCount", Long.class)
+                    .setParameter("report", report)
+                    .getSingleResult();
+
+
+            long yoine = em.createNamedQuery("getYoine", Long.class)
+                    .setParameter("report", report)
+                    .setParameter("employee", login_employee)
+                    .getSingleResult();
+
+            report.setYoineCount((int)yoine_count);
+
+            if(yoine == 0) {
+                report.setYoine(false);
+            } else {
+                report.setYoine(true);
+            }
+
+        }
+
         long reports_count = (long)em.createNamedQuery("getReportsCount", Long.class)
                                      .getSingleResult();
 
@@ -54,6 +78,7 @@ public class ReportsIndexServlet extends HttpServlet {
         request.setAttribute("reports", reports);
         request.setAttribute("reports_count", reports_count);
         request.setAttribute("page", page);
+
         if(request.getSession().getAttribute("flush") != null) {
             request.setAttribute("flush", request.getSession().getAttribute("flush"));
             request.getSession().removeAttribute("flush");

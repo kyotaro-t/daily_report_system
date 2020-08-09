@@ -60,6 +60,29 @@ public class Report {
     @Column(name = "updated_at", nullable = false)
     private Timestamp updated_at;
 
+
+    private int yoineCount = 0;
+
+    private boolean yoine = false;
+
+
+
+    public int getYoineCount() {
+        return yoineCount;
+    }
+
+    public void setYoineCount(int yoineCount) {
+        this.yoineCount = yoineCount;
+    }
+
+    public boolean isYoine() {
+        return yoine;
+    }
+
+    public void setYoine(boolean yoine) {
+        this.yoine = yoine;
+    }
+
     public Integer getId() {
         return id;
     }

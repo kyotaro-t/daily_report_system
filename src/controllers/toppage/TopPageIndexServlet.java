@@ -49,6 +49,27 @@ public class TopPageIndexServlet extends HttpServlet {
                 .setMaxResults(15)
                 .getResultList();
 
+        for( Report report : reports ) {
+            long yoine_count = em.createNamedQuery("getYoineCount", Long.class)
+                    .setParameter("report", report)
+                    .getSingleResult();
+
+
+            long yoine = em.createNamedQuery("getYoine", Long.class)
+                    .setParameter("report", report)
+                    .setParameter("employee", login_employee)
+                    .getSingleResult();
+
+            report.setYoineCount((int)yoine_count);
+
+            if(yoine == 0) {
+                report.setYoine(false);
+            } else {
+                report.setYoine(true);
+            }
+
+        }
+
         long reports_count = (long)em.createNamedQuery("getMyReportsCount", Long.class)
                 .setParameter("employee", login_employee)
                 .getSingleResult();
